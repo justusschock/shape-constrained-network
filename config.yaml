@@ -1,0 +1,16 @@
+schock:
+  pca_data_path: "/images/Infrarot/DeepAAM/Testsets/Original"
+  network_train_path: "/images/Infrarot/DeepAAM/Trainsets/Original"
+  validation_path: "/images/Infrarot/DeepAAM/Testsets/Original"
+  network_type: "ShapeNet"
+  output_path: "/home/temp/schock/Shape_Test/Outputs"
+  verbose: True
+  img_size: 224
+  initial_lr: 1e-4
+  num_epochs: 50
+  num_shape_params: 25
+  num_global_params: 1
+  scale: True
+  center: True
+  norm: "instance"
+  batch_size: 1
