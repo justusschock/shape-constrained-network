@@ -8,7 +8,7 @@ To Install the necessary environment follow these steps:
 1. `git clone https:/github.com/justusschock/shape-constrained-network.git`
 2. `cd shape-constrained-network`
 3. `conda create create -f environment.yml`
-4. For windows: `activate pytorch_menpo`\
+4. For windows: `activate pytorch_menpo`
 For Linux: `source activate pytorch_menpo`
 5. `python setup.py install`
 
