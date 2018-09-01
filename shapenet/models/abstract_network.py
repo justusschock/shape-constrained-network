@@ -1,5 +1,4 @@
 import torch
-import data
 from torch.utils.data import DataLoader
 from abc import abstractmethod
 from tensorboardX import SummaryWriter

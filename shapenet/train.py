@@ -1,15 +1,15 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 import matplotlib
 matplotlib.use('Agg')
 
-from data import DataProcessing, ShapeDataset
-from utils import save_network
+from shapenet.data import DataProcessing, ShapeDataset
+from shapenet.utils import save_network
 import argparse
 import sys
-from net_config import NetConfig
-from models import AbstractNetwork, ShapeNetwork
+from shapenet.utils.net_config import NetConfig
+from shapenet.models import AbstractNetwork, ShapeNetwork
 from datetime import datetime
 import shutil
 import torch

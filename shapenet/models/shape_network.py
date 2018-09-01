@@ -2,11 +2,10 @@ import torch
 from .shape_layer import ShapeLayerPy, ShapeLayerCpp
 from .feature_extractors import Img224x224Kernel7x7SeparatedDims
 from .abstract_network import AbstractNetwork
-from utils import CustomGroupNorm
 from tensorboardX import SummaryWriter
 from tqdm import tqdm
 from torch.utils import data
-from utils import CustomGroupNorm
+from shapenet.utils import CustomGroupNorm
 import os
 import numpy as np
 

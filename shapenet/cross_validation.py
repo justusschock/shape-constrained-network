@@ -2,16 +2,15 @@ import os
 
 
 import torch
-import menpo
 from torch.utils.data import ConcatDataset, DataLoader
 from sklearn.model_selection import KFold
-from data import AAMDataset, DataProcessing, IMG_EXTENSIONS
-from models import ShapeNetwork
+from shapenet.data import ShapeDataset, DataProcessing
+from shapenet.models import ShapeNetwork
 from menpo import io as mio
 from menpo.shape import PointCloud
 from menpo.transform import TransformChain
 from tensorboardX import SummaryWriter
-from utils import save_network, load_network
+from shapenet.utils import save_network, load_network
 from torchvision.transforms import Compose, ToTensor, Normalize
 import shutil
 from menpo.landmark import LandmarkManager
@@ -60,12 +59,12 @@ def kfold_cross_validation(data_paths, model_cls=ShapeNetwork, img_size=224, bat
         curr_out_path = os.path.join(outdir, os.path.split(data_paths[test_path])[-1])
         _trainsets = []
         for idx in train_paths:
-            _trainsets.append(AAMDataset(data_paths[idx], train_transforms, (img_size, img_size)))
+            _trainsets.append(ShapeDataset(data_paths[idx], train_transforms, (img_size, img_size)))
 
         trainset = ConcatDataset(_trainsets)
         train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=4)
 
-        valset = AAMDataset(data_paths[test_path], val_transforms, (img_size, img_size))
+        valset = ShapeDataset(data_paths[test_path], val_transforms, (img_size, img_size))
         val_loader = DataLoader(valset, batch_size=batch_size, shuffle=False, num_workers=4)
 
         pca_data = DataProcessing.from_menpo(data_paths[train_paths[0]])
