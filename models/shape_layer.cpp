@@ -7,8 +7,6 @@ at::Tensor shape_func_forward(at::Tensor shape_params,
                               at::Tensor global_params,
                               at::Tensor shape_mean,
                               at::Tensor shape_components,
-                              int64_t n_shape_params,
-                              int64_t n_global_params,
                               int64_t img_size
 ){
 
@@ -27,8 +25,9 @@ at::Tensor shape_func_forward(at::Tensor shape_params,
 
     auto weighted_components = components.mul(shape_params.expand_as(components));
 
+    translation_params = translation_params.squeeze(-1).squeeze(-1).unsqueeze(1);
     shapes = shapes.add(weighted_components.sum(1)).add(translation_params.mul(img_size));
-    shapes = shapes.mul(global_params.expand_as(shapes));
+    shapes = shapes.mul(global_params.squeeze(-1).squeeze(-1).unsqueeze(1).expand_as(shapes));
 
     return shapes;
 

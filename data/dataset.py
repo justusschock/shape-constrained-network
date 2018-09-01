@@ -10,6 +10,22 @@ import menpo
 
 
 def menpo_loader(file_name: str, img_size: tuple, crop=True):
+    """
+    Load single menpo sample
+
+    Parameters
+    ----------
+    file_name: string
+        path to file
+    img_size: tuple
+        current image size
+    crop: bool
+        whether or not to crop the images
+
+    Returns
+    -------
+    tuple: image and landmarks
+    """
     menpo_img = mio.import_image(file_name)
 
     if crop:
@@ -33,6 +49,20 @@ def menpo_loader(file_name: str, img_size: tuple, crop=True):
 
 
 def default_loader(file_name: str, img_size: tuple):
+    """
+    Load Single Numpy Sample
+
+    Parameters
+    ----------
+    file_name: string
+        path to file
+    img_size: tuple
+        current image size
+
+    Returns
+    -------
+    tuple: image and landmarks
+    """
     _data = imread(file_name, as_grey=True)
 
     orig_data_size = _data.shape[:2]
@@ -53,7 +83,21 @@ def default_loader(file_name: str, img_size: tuple):
 
 
 class ShapeDataset(data.Dataset):
+    """
+    Dataset to load image and corresponding shape
+    """
     def __init__(self, data_path, transforms, img_size):
+        """
+
+        Parameters
+        ----------
+        data_path: string
+            path to data directory
+        transforms: Any
+            transformations to apply on image
+        img_size: tuple
+            image size
+        """
         self.data_path = data_path
         self.transforms = transforms
         self.img_size = img_size

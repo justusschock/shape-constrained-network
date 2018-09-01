@@ -21,6 +21,31 @@ torch.cuda.benchmark = True
 
 def kfold_cross_validation(data_paths, model_cls=ShapeNetwork, img_size=224, batch_size=1, num_epochs=50, lr=1e-4,
                            out_path=".", loss_fn=torch.nn.MSELoss(), n_shape_params=None):
+    """
+    Cross Validation
+
+    Parameters
+    ----------
+    data_paths: list
+        paths containing data
+    model_cls: Any
+        model Class to train
+    img_size: int
+        image size
+    batch_size: int
+        batch size
+    num_epochs: int
+        number of epochs
+    lr: float
+        learning rate
+    out_path: string
+        path to save results and weights to
+    loss_fn: torch.nn.Module
+        loss function
+    n_shape_params: int
+        number of shape parameters
+
+    """
 
     outdir = os.path.join(out_path, "%d_epochs" % num_epochs)
     train_transforms = Compose([ToTensor(), Normalize([0], [1])])
@@ -121,17 +146,8 @@ def kfold_cross_validation(data_paths, model_cls=ShapeNetwork, img_size=224, bat
 
 if __name__ == '__main__':
 
-    DATA_DIRS = ["V:/Infrarot/FaceDB_Splits/00",
-                 "V:/Infrarot/FaceDB_Splits/01",
-                 "V:/Infrarot/FaceDB_Splits/02",
-                 "V:/Infrarot/FaceDB_Splits/03",
-                 "V:/Infrarot/FaceDB_Splits/04"]
-    OUT_PATH = "K:/TMP_DIR"
+    DATA_DIRS = []
+    OUT_PATH = ""
 
-    # DATA_DIRS = ["/images/Infrarot/FaceDB_Splits/00",
-    #              "/images/Infrarot/FaceDB_Splits/01",
-    #              "/images/Infrarot/FaceDB_Splits/02",
-    #              "/images/Infrarot/FaceDB_Splits/03",
-    #              "/images/Infrarot/FaceDB_Splits/04"]
-    # OUT_PATH = "/home/temp/schock/TMP_DIR"
+
     kfold_cross_validation(data_paths=DATA_DIRS, num_epochs=2, out_path=OUT_PATH)

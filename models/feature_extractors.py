@@ -3,28 +3,94 @@ from .abstract_network import AbstractFeatureExtractor
 
 
 class Conv2dRelu(torch.nn.Module):
+    """
+    Block holding one Conv2d and one ReLU layer
+    """
     def __init__(self, *args, **kwargs):
+        """
+
+        Parameters
+        ----------
+        args: list
+            positional arguments (passed to Conv2d)
+        kwargs: dict
+            keyword arguments (passed to Conv2d)
+        """
         super().__init__()
         self._conv = torch.nn.Conv2d(*args, **kwargs)
         self._relu = torch.nn.ReLU()
 
     def forward(self, input_batch):
+        """
+        Forward batch though layers
+
+        Parameters
+        ----------
+        input_batch: torch.Tensor
+            input batch
+
+        Returns
+        -------
+        torch.Tensor: result
+        """
         return self._relu(self._conv(input_batch))
 
 
 class Conv3dRelu(torch.nn.Module):
+    """
+    Block holding one Conv3d and one ReLU layer
+    """
     def __init__(self, *args, **kwargs):
+        """
+
+        Parameters
+        ----------
+        args: list
+            positional arguments (passed to Conv3d)
+        kwargs: dict
+            keyword arguments (passed to Conv3d)
+        """
         super().__init__()
         self._conv = torch.nn.Conv3d(*args, **kwargs)
         self._relu = torch.nn.ReLU()
 
     def forward(self, input_batch):
+        """
+        Forward batch though layers
+
+        Parameters
+        ----------
+        input_batch: torch.Tensor
+            input batch
+
+        Returns
+        -------
+        torch.Tensor: result
+        """
         return self._relu(self._conv(input_batch))
 
 
 class Img224x224Kernel3x3(AbstractFeatureExtractor):
     @staticmethod
     def _build_model(in_channels, out_features, norm_class, p_dropout):
+        """
+        Build the actual model structure
+
+        Parameters
+        ----------
+        in_channels: int
+            number of input channels
+        out_features: int
+            number of outputs
+        norm_class: Any
+            class implementing a normalization
+        p_dropout: float
+            dropout probability
+
+        Returns
+        -------
+        torch.nn.Module: ensembled model
+        """
         model = torch.nn.Sequential()
         model.add_module("conv_1_1", Conv2dRelu(in_channels, 64, 3, 1))
         model.add_module("conv_1_2", Conv2dRelu(64, 64, 3, 1))
@@ -77,6 +143,24 @@ class Img224x224Kernel3x3(AbstractFeatureExtractor):
 class Img224x224Kernel3x3SeparatedDims(AbstractFeatureExtractor):
     @staticmethod
     def _build_model(in_channels, out_features, norm_class, p_dropout):
+        """
+        Build the actual model structure
+
+        Parameters
+        ----------
+        in_channels: int
+            number of input channels
+        out_features: int
+            number of outputs
+        norm_class: Any
+            class implementing a normalization
+        p_dropout: float
+            dropout probability
+
+        Returns
+        -------
+        torch.nn.Module: ensembled model
+        """
         model = torch.nn.Sequential()
         model.add_module("conv_1_1", Conv2dRelu(in_channels, 64, 3, 1))
         model.add_module("conv_1_1_2", Conv2dRelu(64, 64, (1, 3), 1))
@@ -142,6 +226,24 @@ class Img224x224Kernel3x3SeparatedDims(AbstractFeatureExtractor):
 class Img224x224Kernel7x7SeparatedDims(AbstractFeatureExtractor):
     @staticmethod
     def _build_model(in_channels, out_params, norm_class, p_dropout):
+        """
+        Build the actual model structure
+
+        Parameters
+        ----------
+        in_channels: int
+            number of input channels
+        out_features: int
+            number of outputs
+        norm_class: Any
+            class implementing a normalization
+        p_dropout: float
+            dropout probability
+
+        Returns
+        -------
+        torch.nn.Module: ensembled model
+        """
         model = torch.nn.Sequential()
 
         model.add_module("conv_1", Conv2dRelu(in_channels, 64, (7, 1)))
@@ -193,6 +295,24 @@ class Img224x224Kernel7x7SeparatedDims(AbstractFeatureExtractor):
 class Img1024x1024Kernel9x9SeparatedDims(AbstractFeatureExtractor):
     @staticmethod
     def _build_model(in_channels, out_features, norm_class, p_dropout):
+        """
+        Build the actual model structure
+
+        Parameters
+        ----------
+        in_channels: int
+            number of input channels
+        out_features: int
+            number of outputs
+        norm_class: Any
+            class implementing a normalization
+        p_dropout: float
+            dropout probability
+
+        Returns
+        -------
+        torch.nn.Module: ensembled model
+        """
         model = torch.nn.Sequential()
 
         model.add_module("conv_1", Conv2dRelu(in_channels, 64, (9, 1)))
@@ -246,6 +366,24 @@ class Img1024x1024Kernel9x9SeparatedDims(AbstractFeatureExtractor):
     class Img512x512Kernel9x9SeparatedDims(AbstractFeatureExtractor):
         @staticmethod
         def _build_model(in_channels, out_features, norm_class, p_dropout):
+            """
+            Build the actual model structure
+
+            Parameters
+            ----------
+            in_channels: int
+                number of input channels
+            out_features: int
+                number of outputs
+            norm_class: Any
+                class implementing a normalization
+            p_dropout: float
+                dropout probability
+
+            Returns
+            -------
+            torch.nn.Module: ensembled model
+            """
             model = torch.nn.Sequential()
 
             model.add_module("conv_1", Conv2dRelu(in_channels, 64, (9, 1)))

@@ -95,8 +95,9 @@ if __name__ == '__main__':
     eigen_shapes = DataProcessing.from_menpo(config.pca_data_path).lmk_pca(config.scale, config.center,
                                                                            n_components=config.num_shape_params)
 
-    model = ShapeNetwork(eigen_shapes, config.num_shape_params, config.num_global_params, config.img_size,
-                         norm_type=config.norm)
+    model = ShapeNetwork(eigen_shapes, config.num_shape_params, config.num_global_params,
+                         config.num_translation_params, config.img_size,
+                         norm_type=config.norm, use_cpp=config.use_cpp)
     # model = AppearanceNetwork(eigen_appearances, config.num_appearance_params, config.patch_size, config.num_points,
     #                           pt_heatmmap=config.pt_heatmap, norm_type=config.norm)
 

@@ -16,7 +16,21 @@ from tqdm import tqdm
 
 
 class SingleImage(object):
+    """
+    Holds Single Image
+    """
     def __init__(self, img, lmk, **kwargs):
+        """
+
+        Parameters
+        ----------
+        img: np.ndarray
+            actual image pixels
+        lmk: np.ndarray
+            landmarks
+        kwargs: dict
+            additional kwargs like file paths
+        """
         self.img = img
         self.lmk = lmk
         for key, val in kwargs.items():
@@ -24,6 +38,17 @@ class SingleImage(object):
 
     @classmethod
     def from_files(cls, file):
+        """
+        Create class from image or landmark file
+        Parameters
+        ----------
+        file: string
+            path to image or landmarkfile
+
+        Returns
+        -------
+        class instance
+        """
         is_img_file = is_image_file(file)
         is_lmk_file = is_landmark_file(file)
 
@@ -62,6 +87,19 @@ class SingleImage(object):
 
     @classmethod
     def from_menpo(cls, menpo_img: Image, **kwargs):
+        """
+        Creates class from menpo Image
+        Parameters
+        ----------
+        menpo_img: menpo.image.Image
+            menpo image to create class from
+        kwargs: dict
+            additional keyword arguments
+
+        Returns
+        -------
+        class instance
+        """
         lmk = menpo_img.landmarks[menpo_img.landmarks.group_labels[-1]]
         if menpo.__version__ == '0.7.7':
             points = lmk.lms.points
@@ -73,13 +111,29 @@ class SingleImage(object):
         return cls(img, points, **kwargs)
 
     def resize(self, img_size):
-        _curr_size = self.img_size
-        _scales = np.asarray(img_size) / np.asarray(_curr_size)
-        self.img = transform.resize(self.img, img_size)
-        self.lmk = self.lmk * _scales
+        """
+        Resize Image
+
+        Parameters
+        ----------
+        img_size: new image size
+
+        Returns
+        -------
+        resized image
+        """
+        return self.__class__.from_menpo(self.as_menpo_img().resize(img_size))
 
     @property
     def bbox(self):
+        """
+        Compute bounding box
+
+        Returns
+        -------
+        tuple: bounding box y_min, x_min, y_max, x_max
+
+        """
         transposed_lmk = self.lmk.transpose()
         y_min, x_min = transposed_lmk.min(axis=1)
         y_max, x_max = transposed_lmk.max(axis=1)
@@ -87,6 +141,13 @@ class SingleImage(object):
 
     @property
     def img_size(self):
+        """
+        Returns current image size
+
+        Returns
+        -------
+        tuple: img_size
+        """
         try:
             img_size = self.img.shape[:1]
         except:
@@ -96,6 +157,13 @@ class SingleImage(object):
         return img_size
 
     def as_menpo_img(self):
+        """
+        Converts image to menpo image
+
+        Returns
+        -------
+        menpo.image.Image: current image as menpo image
+        """
         menpo_img = Image(self.img)
         lmk = self.lmk
         menpo_lmk = PointCloud(self.lmk)
@@ -106,11 +174,34 @@ class SingleImage(object):
         return menpo_img
 
     def view(self, **kwargs):
-        self.as_menpo_img().view_landmarks(**kwargs)
+        """
+        Show image (with landmarks if available)
+
+        Parameters
+        ----------
+        kwargs: dict
+            additional keyword arguments
+        """
+        try:
+            self.as_menpo_img().view_landmarks(**kwargs)
+        except:
+            self.as_menpo_img().view(**kwargs)
 
 
 class DataProcessing(object):
+    """
+    Process multiple SingleImages
+    """
     def __init__(self, samples, **kwargs):
+        """
+
+        Parameters
+        ----------
+        samples: list
+            list of SingleImages
+        kwargs: dict
+            additional keyword arguments
+        """
         super().__init__()
         self.samples = samples
         for key, val in kwargs.items():
@@ -118,6 +209,20 @@ class DataProcessing(object):
 
     @classmethod
     def from_dir(cls, data_dir, verbose=True):
+        """
+        create class instance from directory
+
+        Parameters
+        ----------
+        data_dir: string
+            directory where data is stored
+        verbose: bool
+            whether or not to print current progress
+
+        Returns
+        -------
+        class instance
+        """
 
         if verbose:
             print("Loading data from %s" % data_dir)
@@ -137,6 +242,20 @@ class DataProcessing(object):
 
     @classmethod
     def from_menpo(cls, data_dir, verbose=True):
+        """
+        Create class instance from directory of menpo files
+
+        Parameters
+        ----------
+        data_dir: string
+            path to data directory
+        verbose: bool
+            whether or not to print current progress
+
+        Returns
+        -------
+        class instance
+        """
         if verbose:
             print("Loading data from %s" % data_dir)
             wrapper_fn = tqdm
@@ -156,18 +275,54 @@ class DataProcessing(object):
 
     @property
     def landmarks(self):
+        """
+        get list of samples' landmarks
+
+        Returns
+        -------
+        list: landmarks
+        """
         return [tmp.lmk for tmp in self.samples]
 
     @property
     def images(self):
+        """
+        get list of samples' pixels
+
+        Returns
+        -------
+        list: pixels
+        """
         return [tmp.img for tmp in self.samples]
 
     def resize(self, img_size):
+        """
+        resize all samples
+
+        Parameters
+        ----------
+        img_size: tuple
+            new image size
+        """
         for idx, sample in enumerate(self.samples):
             self.samples[idx] = sample.resize(img_size)
 
     @staticmethod
     def _get_files(directory, extensions):
+        """
+        return files with extensions
+
+        Parameters
+        ----------
+        directory: string
+            directory containing the files
+        extensions: list
+            list of strings specifying valid extensions
+
+        Returns
+        -------
+        list: valid files
+        """
 
         files = []
 
@@ -186,6 +341,24 @@ class DataProcessing(object):
         return len(self.samples)
 
     def lmk_pca(self, scale: bool, center: bool, *args, **kwargs):
+        """
+        perform PCA on samples' landmarks
+
+        Parameters
+        ----------
+        scale: bool
+            whether or not to scale the principa components with the corresponding eigen value
+        center: bool
+            whether or not to substract mean before pca
+        args: list
+            additional positional arguments (passed to pca)
+        kwargs: dict
+            additional keyword arguments (passed to pca)
+
+        Returns
+        -------
+        np.array: eigen_shapes
+        """
         landmarks = np.asarray(self.landmarks)
         if center:
             mean = np.mean(landmarks.reshape(-1, 2), axis=0)

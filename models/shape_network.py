@@ -20,8 +20,34 @@ class ShapeNetwork(AbstractNetwork):
                  in_channels=1,
                  verbose=False,
                  norm_type='instance',
+                 use_cpp=False,
                  **kwargs
                  ):
+        """
+
+        Parameters
+        ----------
+        eigen_shapes: np.ndarray
+            eigen shapes (obtained py PCA)
+        n_shape_params: int
+            number of shape parameters
+        n_global_params: int
+            number of global scaling parameters
+        n_translation_params: int
+            number of translation parameters
+        img_size: int
+            image size
+        in_channels: int
+            number of input channels
+        verbose: bool
+            verbosity
+        norm_type: string
+            which normalization type to use. Must be one of ["instance", "batch", "group"]
+        use_cpp: bool
+            whether or not to use the C++ Implementation of the Shape Layer
+        kwargs: dict
+            additional keyword arguments
+        """
         super().__init__()
         self._kwargs = kwargs
         self._n_shape_params = n_shape_params
@@ -35,7 +61,7 @@ class ShapeNetwork(AbstractNetwork):
                      'batch': torch.nn.BatchNorm2d,
                      'group': CustomGroupNorm}
         norm_class = norm_dict.get(norm_type, None)
-        args = [eigen_shapes, n_shape_params, n_global_params, n_translation_params, in_channels, norm_class]
+        args = [eigen_shapes, n_shape_params, n_global_params, n_translation_params, in_channels, norm_class, use_cpp]
 
         if img_size == 224:
             self._build_model_224(*args)
@@ -47,14 +73,38 @@ class ShapeNetwork(AbstractNetwork):
                          n_global_params,
                          n_translation_params,
                          in_channels,
-                         norm_class):
+                         norm_class,
+                         use_cpp):
+        """
+        Builds model for image size 224
+
+        Parameters
+        ----------
+        eigen_shapes: np.ndarray
+            eigen shapes (obtained by PCA)
+        n_shape_params: int
+            number of shape parameters
+        n_global_params: int
+            number of global scaling parameters
+        n_translation_params: int
+            number of translation parameters
+        in_channels: int
+            number of input channels
+        norm_class: Any
+            class implementing a normalization
+        use_cpp: bool
+            whether or not to use the C++ implementation of the shape layer
+
+        """
 
         model = Img224x224Kernel7x7SeparatedDims(in_channels,
                                                  n_shape_params+n_global_params+n_translation_params,
                                                  norm_class)
-        ShapeLayer = ShapeLayerPy
+
+        shape_layer_cls = ShapeLayerCpp if use_cpp else ShapeLayerPy
+
         self._model = model
-        self._shape_layer = ShapeLayer(
+        self._shape_layer = shape_layer_cls(
             eigen_shapes,
             n_shape_params,
             n_global_params,
@@ -69,8 +119,19 @@ class ShapeNetwork(AbstractNetwork):
                              torch.arange(n_shape_params + n_translation_params,
                                           n_shape_params + n_translation_params + n_global_params).long())
 
-    
     def forward(self, input_images):
+        """
+        Forward input batch through network and shape layer
+
+        Parameters
+        ----------
+        input_images: torch.Tensor
+            input batch
+
+        Returns
+        -------
+        torch.Tensor predicted shapes
+        """
 
         features = self._model(input_images)
 
@@ -112,6 +173,22 @@ class ShapeNetwork(AbstractNetwork):
 
     @staticmethod
     def validate(dataloader: data.DataLoader, model, loss_fn, writer: SummaryWriter, **kwargs):
+        """
+        Validate on dataset
+
+        Parameters
+        ----------
+        dataloader: DataLoader
+            loader for validation data
+        model: AbstractNetwork
+            model to validate
+        loss_fn: torch.nn.Module
+            loss function to monitor
+        writer: SummaryWriter
+            Summarywriter to log loss values
+        kwargs: dict
+            additional keyword arguments
+        """
         device = kwargs.get("device", torch.device("cpu"))
         verbose = kwargs.get("verbose", True)
         out_dir = kwargs.get("out_dir", "./Results/UnknownEpoch")
@@ -135,9 +212,6 @@ class ShapeNetwork(AbstractNetwork):
             last_result = model(img)
             loss_value = loss_fn(last_result, label)
 
-            if kwargs.get("save_outputs", False):
-                save_shape_differences(img, label, last_result, os.path.join(out_dir, "orig_appearance_image_%d.png" % idx))
-                save_tensorboard_shape_differences(img, label, last_result, writer, curr_epoch)
             loss_vals.append(np.asscalar(loss_value.detach().cpu().sum().numpy()))
 
         if verbose:
@@ -148,6 +222,24 @@ class ShapeNetwork(AbstractNetwork):
     @staticmethod
     def single_epoch(dataloader: data.DataLoader, optimizer: torch.optim.Optimizer, model, loss_fn,
                      writer: SummaryWriter, **kwargs):
+        """
+        Train single epoch
+
+        Parameters
+        ----------
+        dataloader: DataLoader
+            loader for training data
+        optimizer: torch.optim.Optimizer
+            optimizer implementing the actual optimization algorithm
+        model: AbstractNetwork
+            model to train
+        loss_fn: torch.nn.Module
+            loss function to monitor and calculate gradients
+        writer: SummaryWriter
+            Summarywriter to log loss values
+        kwargs: dict
+            additional keyword arguments
+        """
         device = kwargs.get("device", torch.device("cpu"))
 
         verbose = kwargs.get("verbose", True)
