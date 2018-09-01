@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Shape Constrained Network
 
 This repository contains my implementation of a shape-constrained network.
