@@ -21,6 +21,8 @@ Even images containing small children or babies, which are typically hard for st
 yield acceptable results.
 
 
+The pretrained model with it's configuration file is provided [here](https://drive.google.com/open?id=15nA0wEKoaDfDInEXwGBxDnVLD6bPX_i_)
+
 ### Indoor
 
 #### Frontal Pose
