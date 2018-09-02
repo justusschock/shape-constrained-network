@@ -125,7 +125,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description="Select User and Configuration file")
     parser.add_argument("-u", "--user", help="Select User", dest="user",
-                        type=str, default="schock")
+                        type=str, default="default")
     parser.add_argument("-f", "--config_file",
                         help="Select Configuration file", dest="config_file",
                         type=str, default="./config.yaml")
@@ -133,7 +133,7 @@ if __name__ == '__main__':
     yaml_file_path = os.path.join(os.path.split(
         os.path.realpath(__file__))[0], "config.yaml")
 
-    parse_args = sys.argv[1:] if len(sys.argv) > 1 else ["-u", "schock", "-f",
+    parse_args = sys.argv[1:] if len(sys.argv) > 1 else ["-u", "default", "-f",
                                                          yaml_file_path]
     parsed_args = parser.parse_args(parse_args)
 
