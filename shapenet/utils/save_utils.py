@@ -11,16 +11,16 @@ def save_network(model, optimizer, epoch, filepath):
     torch.save(state, filepath)
 
 
-def load_network(filename, model, optimizer=None):
+def load_network(filename, model, optimizer=None, **kwargs):
     if os.path.isfile(filename):
         print("=> loading checkpoint '{}'".format(filename))
-        checkpoint = torch.load(filename)
+        checkpoint = torch.load(filename, **kwargs)
         start_epoch = checkpoint['epoch']
         model.load_state_dict(checkpoint['state_dict'])
         if optimizer is not None:
             optimizer.load_state_dict(checkpoint['optimizer'])
         print("=> loaded checkpoint '{}' (epoch {})"
-              .format(filename, checkpoint['epoch']))
+              .format(filename, checkpoint['epoch']+1))
         return model, optimizer, start_epoch
     else:
         print("=> no checkpoint found at '{}'".format(filename))

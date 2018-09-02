@@ -5,4 +5,5 @@ from .data import DataProcessing, SingleImage, IMG_EXTENSIONS, \
 from .models import AbstractNetwork, ShapeNetwork, ShapeLayerCpp, ShapeLayerPy
 from .utils import load_network, save_network, NetConfig, CustomGroupNorm
 from .train import train
-from .cross_validation import kfold_cross_validation
+
+get_shapenet_from_files = ShapeNetwork.from_weight_and_config

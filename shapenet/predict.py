@@ -10,7 +10,7 @@ from tqdm import tqdm
 from .data import DataProcessing
 from .utils import load_network, NetConfig
 from .models import ShapeNetwork
-
+from matplotlib import pyplot as plt
 
 def predict(data_path, config: NetConfig, weight_path, output_path=None,
             gts=True, transforms=Compose([ToTensor(), Normalize([0], [1])]),
@@ -28,7 +28,7 @@ def predict(data_path, config: NetConfig, weight_path, output_path=None,
 
     os.makedirs(output_path, exist_ok=True)
 
-    model, _, _ = load_network(weight_path, model, None)
+    model, _, _ = load_network(weight_path, model, None, map_location="cpu")
 
     model = model.to(device)
 
@@ -60,25 +60,32 @@ def predict(data_path, config: NetConfig, weight_path, output_path=None,
 
         _pred_file = os.path.join(output_path, os.path.split(str(_path))[-1])
         _pred_file = _pred_file.rsplit(".", maxsplit=1)[0]
-        if gts:
-            gt_lmk = _menpo_img.landmarks[_menpo_img.landmarks.group_labels[-1]]
-            mio.export_landmark_file(gt_lmk, _pred_file + "_gt.ljson",
-                                     overwrite=True)
 
-        mio.export_image(_menpo_img, _pred_file + ".png", overwrite=True)
-        _lmk_man = LandmarkManager()
+        _menpo_img.landmarks["pred"] = applied_trafos.apply(
+            PointCloud(_pred.cpu().detach()[0].numpy().squeeze())
+        )
 
-        remapped_pred = applied_trafos.apply(
-            PointCloud(_pred.cpu().detach()[0].numpy().squeeze()))
-        _lmk_man["pred"] = remapped_pred
-        mio.export_landmark_file(_lmk_man["pred"], _pred_file + "_pred.ljson",
-                                 overwrite=True)
+        plt.figure()
+        tmp = _menpo_img.view_landmarks(group="LMK", marker_face_colour='r', marker_edge_colour='r')
+        try:
+            tmp.save_figure(_pred_file + "_gt.png", bbox_inches='tight')
+        except TypeError:
+            tmp.save_figure(_pred_file + "_gt.png")
+        plt.close()
+        plt.figure()
+        tmp = _menpo_img.view_landmarks(group="pred", marker_face_colour='r', marker_edge_colour='r')
+        try:
+            tmp.save_figure(_pred_file + "_pred.png", bbox_inches='tight')
+        except TypeError:
+            tmp.save_figure(_pred_file + "_pred.png")
+        plt.close()
+
 
 if __name__ == '__main__':
     print("Start Prediction")
-    config = NetConfig("K:/TEST_SHAPE/Outputs/ShapeNet/18-09-01_10-54-27/config.yaml", "schock")
-    DATA_PATHS = ["K:/300W/01_Indoor", "K:/300W/02_Outdoor"]
+    config = NetConfig("/home/schock/Downloads/config.yaml", "default")
+    DATA_PATHS = ["/home/schock/Downloads/300W/01_Indoor", "/home/schock/Downloads/300W/02_Outdoor"]
     for path in DATA_PATHS:
         predict(path, config,
-                "K:/TEST_SHAPE/Outputs/ShapeNet/18-09-01_10-54-27/Checkpoints/model_epoch_70.pth",
+                "/home/schock/Downloads/model_epoch_70.pth",
                 )

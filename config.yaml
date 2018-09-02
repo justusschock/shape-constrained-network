@@ -11,6 +11,7 @@ default:
   num_shape_params: 25
   num_global_params: 1
   num_translation_params: 2
+  num_pts: 68
   scale: True
   center: True
   norm: "instance"

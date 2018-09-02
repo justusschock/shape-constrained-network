@@ -1,8 +1,6 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 import matplotlib
-matplotlib.use('Agg')
 
 from shapenet.data import DataProcessing, ShapeDataset
 from shapenet.utils import save_network

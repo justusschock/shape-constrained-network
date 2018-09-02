@@ -1,18 +1,30 @@
-# Shape Constrained Network
+#Shape Constrained Network
 
 This repository contains my implementation of a shape-constrained network.
 
-## Installation
+##Installation
 To Install the necessary environment follow these steps:
 
 1. `git clone https:/github.com/justusschock/shape-constrained-network.git`
 2. `cd shape-constrained-network`
-3. `conda create create -f environment.yml`
-4. For windows: `activate pytorch_menpo`
-For Linux: `source activate pytorch_menpo`
-5. `python setup.py install`
+3. Install these [requirements](##Requirements) or use the provided [Dockerfile](docker/Dockerfile)
+4. `python setup.py install`
 
-## Usage
+##Usage
+###Prediction
+With a config file containing the arguments  `num_shape_params`, `num_global_params`,
+  `num_translation_params`, `num_pts`, `norm` and `img_size`you can get a prediction-ready Network by calling
+ ```python
+shapenet.get_shapenet_from_files("PATH/TO/CONFIG/FILE", 
+                                 "PATH/TO/WEIGHT/FILE", 
+                                 user="CONFIG_USER")
+
+```
+
+You may also add other keyword arguments which are directly passed to `torch.load()`
+as `map_location="cpu"` if you want to load on a CPU-only machine.
+
+###Training
 The Hyperparameters are usually parsed from a YAML-file like this:
 
 ```YAML
@@ -23,12 +35,13 @@ default:
   network_type: "EXPERIMENT_NAME"
   output_path: "PATH/TO/OUTPUT/DIR"
   verbose: True
-  img_size: 224
+  img_size: 224 # currently only image size 224 implemented
   initial_lr: 1e-4
   num_epochs: 75
   num_shape_params: 25
   num_global_params: 1
   num_translation_params: 2
+  num_pts: 2
   scale: True
   center: True
   norm: "instance"
@@ -109,3 +122,11 @@ optimizer = torch.optim.Adam(model.parameters(), lr=float(config.initial_lr))
         save_outputs=False
     )
 ```
+##Requirements
+* [menpo](https://www.menpo.org/installation/) (v. 0.7.7 is recommended)
+* [PyTorch and Torchvision](https://pytorch.org/)
+* [scikit-image](https://scikit-image.org/)
+* [scikit-learn](http://scikit-learn.org/stable/)
+* [tqdm](https://github.com/tqdm/tqdm)
+* [PyYAML](https://pyyaml.org/)
+* [tensorboardX](https://github.com/lanpa/tensorboardX)

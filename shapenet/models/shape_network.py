@@ -1,4 +1,5 @@
 import torch
+from ..utils import load_network, NetConfig
 from .shape_layer import ShapeLayerPy, ShapeLayerCpp
 from .feature_extractors import Img224x224Kernel7x7SeparatedDims
 from .abstract_network import AbstractNetwork
@@ -270,3 +271,18 @@ class ShapeNetwork(AbstractNetwork):
         writer.add_scalar("Mean Train Loss", np.asscalar(np.mean(np.asarray(loss_vals))), curr_epoch)
 
         return optimizer, model
+
+    @classmethod
+    def from_weight_and_config(cls, config_file, weight_file=None, user="default", **kwargs):
+        config = NetConfig(config_file, user, False)
+        eigen_shapes = np.zeros((config.num_shape_params+1, config.num_pts,
+                                 config.num_translation_params))
+        model = cls(eigen_shapes, config.num_shape_params,
+                    config.num_global_params,
+                    config.num_translation_params, config.img_size,
+                    norm_type=config.norm, use_cpp=config.use_cpp)
+
+        if weight_file is not None:
+            model, _, _ = load_network(weight_file, model, None, **kwargs)
+
+        return model

@@ -20,7 +20,7 @@ setup(
     keywords="pytorch deep learning shape network",
     url="https://github.com/justusschock/shape-constrained-network.git",
     packages=["shapenet"],
-    long_description=read('README'),
+    long_description=read('README.md'),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
@@ -32,5 +32,5 @@ setup(
         "Programming Language :: C++",
         "Programming Language :: Python :: 3",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
-    ], install_requires=['torch', 'numpy', 'menpo', 'torchvision']
+    ]
 )
