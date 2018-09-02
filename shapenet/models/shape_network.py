@@ -42,7 +42,8 @@ class ShapeNetwork(AbstractNetwork):
         verbose: bool
             verbosity
         norm_type: string
-            which normalization type to use. Must be one of ["instance", "batch", "group"]
+            which normalization type to use. Must be one of ["instance",
+            "batch", "group"]
         use_cpp: bool
             whether or not to use the C++ Implementation of the Shape Layer
         kwargs: dict
@@ -61,7 +62,8 @@ class ShapeNetwork(AbstractNetwork):
                      'batch': torch.nn.BatchNorm2d,
                      'group': CustomGroupNorm}
         norm_class = norm_dict.get(norm_type, None)
-        args = [eigen_shapes, n_shape_params, n_global_params, n_translation_params, in_channels, norm_class, use_cpp]
+        args = [eigen_shapes, n_shape_params, n_global_params,
+                n_translation_params, in_channels, norm_class, use_cpp]
 
         if img_size == 224:
             self._build_model_224(*args)
@@ -98,7 +100,9 @@ class ShapeNetwork(AbstractNetwork):
         """
 
         model = Img224x224Kernel7x7SeparatedDims(in_channels,
-                                                 n_shape_params+n_global_params+n_translation_params,
+                                                 n_shape_params +
+                                                 n_global_params +
+                                                 n_translation_params,
                                                  norm_class)
 
         shape_layer_cls = ShapeLayerCpp if use_cpp else ShapeLayerPy
@@ -111,13 +115,18 @@ class ShapeNetwork(AbstractNetwork):
             224
         )
 
-        self.register_buffer("indices_shape_params", torch.arange(0, n_shape_params).long())
+        self.register_buffer("indices_shape_params",
+                             torch.arange(0, n_shape_params).long())
         self.register_buffer("indices_translation_params",
                              torch.arange(n_shape_params,
-                                          n_shape_params + n_translation_params).long())
+                                          n_shape_params
+                                          + n_translation_params).long())
         self.register_buffer("indices_global_params",
-                             torch.arange(n_shape_params + n_translation_params,
-                                          n_shape_params + n_translation_params + n_global_params).long())
+                             torch.arange(n_shape_params +
+                                          n_translation_params,
+                                          n_shape_params +
+                                          n_translation_params +
+                                          n_global_params).long())
 
     def forward(self, input_images):
         """
@@ -136,13 +145,17 @@ class ShapeNetwork(AbstractNetwork):
         features = self._model(input_images)
 
         indices_shape_params = getattr(self, "indices_shape_params")
-        indices_translation_params = getattr(self, "indices_translation_params")
+        indices_translation_params = getattr(self,
+                                             "indices_translation_params")
         indices_global_params = getattr(self, "indices_global_params")
         shape_params = features.index_select(dim=1, index=indices_shape_params)
-        translation_params = features.index_select(dim=1, index=indices_translation_params)
-        global_params = features.index_select(dim=1, index=indices_global_params)
+        translation_params = features.index_select(
+            dim=1, index=indices_translation_params)
+        global_params = features.index_select(dim=1,
+                                              index=indices_global_params)
 
-        shapes = self._shape_layer(shape_params, translation_params, global_params)
+        shapes = self._shape_layer(shape_params, translation_params,
+                                   global_params)
         return shapes
 
     @property
@@ -172,7 +185,8 @@ class ShapeNetwork(AbstractNetwork):
         raise AttributeError("cannot reset shape layer")
 
     @staticmethod
-    def validate(dataloader: data.DataLoader, model, loss_fn, writer: SummaryWriter, **kwargs):
+    def validate(dataloader: data.DataLoader, model, loss_fn,
+                 writer: SummaryWriter, **kwargs):
         """
         Validate on dataset
 
@@ -207,20 +221,25 @@ class ShapeNetwork(AbstractNetwork):
 
         loss_vals = []
         for idx, data in enumerate(wrapper_fn(dataloader)):
-            img, label = data[0].to(torch.float).to(device), data[1].to(torch.float).to(device)
+            img, label = data[0].to(torch.float).to(device), \
+                         data[1].to(torch.float).to(device)
 
             last_result = model(img)
             loss_value = loss_fn(last_result, label)
 
-            loss_vals.append(np.asscalar(loss_value.detach().cpu().sum().numpy()))
+            loss_vals.append(np.asscalar(
+                loss_value.detach().cpu().sum().numpy()))
 
         if verbose:
-            print("\tMean Validation Loss:\t%f" % np.mean(np.asarray(loss_vals)))
-        writer.add_scalar("Mean Validation Loss", np.asscalar(np.mean(np.asarray(loss_vals))), curr_epoch)
+            print("\tMean Validation Loss:\t%f" % np.mean(
+                np.asarray(loss_vals)))
+        writer.add_scalar("Mean Validation Loss", np.asscalar(np.mean(
+            np.asarray(loss_vals))), curr_epoch)
         return np.asscalar(np.mean(np.asarray(loss_vals)))
 
     @staticmethod
-    def single_epoch(dataloader: data.DataLoader, optimizer: torch.optim.Optimizer, model, loss_fn,
+    def single_epoch(dataloader: data.DataLoader,
+                     optimizer: torch.optim.Optimizer, model, loss_fn,
                      writer: SummaryWriter, **kwargs):
         """
         Train single epoch
@@ -256,11 +275,13 @@ class ShapeNetwork(AbstractNetwork):
             wrapper_fn = linear_fn
 
         for idx, data in enumerate(wrapper_fn(dataloader)):
-            img, label = data[0].to(torch.float).to(device), data[1].to(torch.float).to(device)
+            img, label = data[0].to(torch.float).to(device), \
+                         data[1].to(torch.float).to(device)
 
             last_result = model(img)
             loss_value = loss_fn(last_result, label)
-            loss_vals.append(np.asscalar(loss_value.detach().cpu().sum().numpy()))
+            loss_vals.append(np.asscalar(
+                loss_value.detach().cpu().sum().numpy()))
 
             optimizer.zero_grad()
             loss_value.backward()
@@ -268,12 +289,29 @@ class ShapeNetwork(AbstractNetwork):
 
         if verbose:
             print("\tMean Train Loss:\t%f" % np.mean(np.asarray(loss_vals)))
-        writer.add_scalar("Mean Train Loss", np.asscalar(np.mean(np.asarray(loss_vals))), curr_epoch)
+        writer.add_scalar("Mean Train Loss", np.asscalar(np.mean(
+            np.asarray(loss_vals))), curr_epoch)
 
         return optimizer, model
 
     @classmethod
-    def from_weight_and_config(cls, config_file, weight_file=None, user="default", **kwargs):
+    def from_weight_and_config(cls, config_file, weight_file=None,
+                               user="default", **kwargs):
+        """
+        Init function to create ShapeNet from Config file and eventually load
+        weights if weightfile is given
+
+        Parameters
+        ----------
+        config_file: string
+            Configuration File
+        weight_file: string or None
+            file containing the weights
+        user: string
+            Specifies the user to use inside the config file
+        kwargs:
+            Additional keyword arguments
+        """
         config = NetConfig(config_file, user, False)
         eigen_shapes = np.zeros((config.num_shape_params+1, config.num_pts,
                                  config.num_translation_params))

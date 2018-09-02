@@ -7,7 +7,8 @@ from skimage import transform
 import numpy as np
 import glob
 from menpo import io as mio
-from .utils import is_landmark_file, is_image_file, LMK_EXTENSIONS, IMG_EXTENSIONS
+from .utils import is_landmark_file, is_image_file, LMK_EXTENSIONS, \
+    IMG_EXTENSIONS
 from matplotlib import pyplot as plt
 from menpo.image import Image
 from menpo.landmark import LandmarkManager
@@ -269,7 +270,8 @@ class DataProcessing(object):
         samples = []
         for _img in wrapper_fn(img_paths):
 
-            samples.append(SingleImage.from_menpo(mio.import_image(_img), img_file=_img))
+            samples.append(SingleImage.from_menpo(mio.import_image(_img),
+                                                  img_file=_img))
 
         return cls(samples=samples)
 
@@ -347,7 +349,8 @@ class DataProcessing(object):
         Parameters
         ----------
         scale: bool
-            whether or not to scale the principa components with the corresponding eigen value
+            whether or not to scale the principa components with the
+            corresponding eigen value
         center: bool
             whether or not to substract mean before pca
         args: list
@@ -374,6 +377,7 @@ class DataProcessing(object):
         else:
             components = pca.components_
 
-        return np.array([pca.mean_] + list(components)).reshape(components.shape[0] + 1,
-                                                                *landmarks_transposed.shape[1:]).transpose(0, 2, 1)
+        return np.array([pca.mean_] + list(components)).reshape(
+            components.shape[0] + 1,
+            *landmarks_transposed.shape[1:]).transpose(0, 2, 1)
 

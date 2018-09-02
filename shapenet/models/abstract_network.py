@@ -31,7 +31,8 @@ class AbstractNetwork(torch.nn.Module):
 
     @staticmethod
     @abstractmethod
-    def validate(dataloader: DataLoader, model, loss_fn, writer: SummaryWriter, **kwargs):
+    def validate(dataloader: DataLoader, model, loss_fn, writer: SummaryWriter,
+                 **kwargs):
         """
         Validate on dataset
 
@@ -52,8 +53,8 @@ class AbstractNetwork(torch.nn.Module):
 
     @staticmethod
     @abstractmethod
-    def single_epoch(dataloader: DataLoader, optimizer: torch.optim.Optimizer, model, loss_fn,
-                     writer: SummaryWriter, **kwargs):
+    def single_epoch(dataloader: DataLoader, optimizer: torch.optim.Optimizer,
+                     model, loss_fn, writer: SummaryWriter, **kwargs):
         """
         Train single epoch
 
@@ -77,7 +78,8 @@ class AbstractNetwork(torch.nn.Module):
 
 class AbstractFeatureExtractor(torch.nn.Module):
     """
-    Abstract Feature Extractor Class all further feature extracotrs should be derived from
+    Abstract Feature Extractor Class all further feature extracotrs
+    should be derived from
     """
     def __init__(self, in_channels, out_params, norm_class, p_dropout=0):
         """
@@ -94,7 +96,8 @@ class AbstractFeatureExtractor(torch.nn.Module):
             dropout probability
         """
         super().__init__()
-        self.model = self._build_model(in_channels, out_params, norm_class, p_dropout)
+        self.model = self._build_model(in_channels, out_params, norm_class,
+                                       p_dropout)
 
     def forward(self, input_batch):
         """

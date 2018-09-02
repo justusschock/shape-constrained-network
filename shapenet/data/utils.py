@@ -23,7 +23,8 @@ def is_landmark_file(filename):
 
 def make_dataset(dir):
     """
-    Helper Function to make a dataset containing all images in a certain directory
+    Helper Function to make a dataset containing all images in a certain
+    directory
     :param dir: the directory containing the dataset
     :return: images: list of image paths
     """

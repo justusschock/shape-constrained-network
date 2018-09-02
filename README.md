@@ -2,6 +2,69 @@
 
 This repository contains my implementation of a shape-constrained network.
 
+The measured inference performance is up to 170 FPS on a 1080Ti. 
+These results have been achieved with images already loaded into RAM and 
+forwarding only one single image through the network at the same time (batchsize = 1)
+
+## Results
+
+The given Results are obtained by training the network on [HELEN](http://www.ifp.illinois.edu/~vuongle2/helen/), 
+validating it on [LFPW](https://neerajkumar.org/databases/lfpw/) and predicting samples from [300W](https://ibug.doc.ic.ac.uk/resources/300-W/).
+
+For consistency of the annotated landmarks the landmarks for all datasets have been downloaded from [ibug](https://ibug.doc.ic.ac.uk/resources/facial-point-annotations/).
+
+The following images show that the network can deal with indoor images as well as with outdoor images.
+Despite relatively easy frontal headposes also images containing people with beards, glasses and other 
+small occlusions like cigarettes and images with a high variety of facial expressions can be successfully 
+predicted. 
+Even images containing small children or babies, which are typically hard for stochastically constrained models (like AAMs)
+yield acceptable results.
+
+
+### Indoor
+
+#### Frontal Pose
+
+|Groundtruth|Prediction|
+|:---------:|:--------:|
+|![clooney_gt](images/indoor_015_gt.png "Frontal Pose Groundtruth") | ![clooney_pred](images/indoor_015_pred.png "Frontal Pose Prediction")|
+
+#### Frontal Pose + Beard
+
+|Groundtruth|Prediction|
+|:---------:|:--------:|
+|![lincoln_gt](images/indoor_026_gt.png "Frontal Pose + Beard Groundtruth") | ![lincoln_pred](images/indoor_026_pred.png "Frontal Pose + Beard Prediction")|
+
+#### Small occlusions (Glasses, Hair, Cigarettes etc.)
+|Groundtruth|Prediction|
+|:---------:|:--------:|
+|![gates_gt](images/indoor_037_gt.png "Frontal Pose + Glasses Groundtruth") | ![gates_pred](images/indoor_037_pred.png "Frontal Pose + Glasses Prediction")|
+|![cigarette_gt](images/indoor_076_gt.png "Frontal Pose + Cigarette Groundtruth") | ![cigarette_gt](images/indoor_076_pred.png "Frontal Pose + Cigarette Groundtruth")|
+
+
+### Outdoor
+#### Frontal Pose
+|Groundtruth|Prediction|
+|:---------:|:--------:|
+|![outdoor_frontal_gt](images/outdoor_027_gt.png "Frontal Pose Groundtruth") | ![outdoor_frontal_pred](images/outdoor_027_pred.png "Frontal Pose Prediction")|
+
+
+#### Facial Expressions (Open Mound etc.)
+|Groundtruth|Prediction|
+|:---------:|:--------:|
+|![open_mound_gt](images/outdoor_019_gt.png "Frontal Pose + Open Mound Groundtruth") | ![open_mound_pred](images/outdoor_019_pred.png "Frontal Pose + Open Mound Prediction")|
+
+
+#### Baby and Child Faces
+|Groundtruth|Prediction|
+|:---------:|:--------:|
+|![baby1_gt](images/outdoor_033_gt.png "Small Child Groundtruth") | ![baby1_pred](images/outdoor_033_pred.png "Small Child Prediction")|
+|![small_child_gt](images/outdoor_043_gt.png "Small Child Groundtruth") | ![small_child_pred](images/outdoor_043_pred.png "Small Child Prediction")|
+|![baby2_gt](images/outdoor_259_gt.png "Baby Groundtruth") | ![baby2_pred](images/outdoor_259_pred.png "Baby Prediction")|
+
+
+
+
 ## Installation
 To Install the necessary environment follow these steps:
 

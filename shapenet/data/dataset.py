@@ -128,4 +128,5 @@ if __name__ == '__main__':
         print(idx)
         _data_tensor, _label_tensor = tmp[0], tmp[1]
 
-        plt.imsave(os.path.join("PATH_TO_SAVE_DIR", "FILENAME"), _data_tensor.squeeze().numpy())
+        plt.imsave(os.path.join("PATH_TO_SAVE_DIR", "FILENAME"),
+                   _data_tensor.squeeze().numpy())

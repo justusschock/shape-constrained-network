@@ -12,6 +12,7 @@ from .utils import load_network, NetConfig
 from .models import ShapeNetwork
 from matplotlib import pyplot as plt
 
+
 def predict(data_path, config: NetConfig, weight_path, output_path=None,
             gts=True, transforms=Compose([ToTensor(), Normalize([0], [1])]),
             device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):

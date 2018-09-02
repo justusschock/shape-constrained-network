@@ -287,7 +287,8 @@ class Img224x224Kernel7x7SeparatedDims(AbstractFeatureExtractor):
         model.add_module("conv_11", Conv2dRelu(128, 128, (3, 1)))
         model.add_module("conv_12", Conv2dRelu(128, 128, (1, 3)))
 
-        model.add_module("final_conv", torch.nn.Conv2d(128, out_params, (2, 2)))
+        model.add_module("final_conv", torch.nn.Conv2d(128, out_params,
+                                                       (2, 2)))
 
         return model
 
@@ -359,7 +360,8 @@ class Img1024x1024Kernel9x9SeparatedDims(AbstractFeatureExtractor):
         model.add_module("conv_11", Conv2dRelu(128, 128, (3, 1)))
         model.add_module("conv_12", Conv2dRelu(128, 128, (1, 3)))
 
-        model.add_module("final_conv", torch.nn.Conv2d(128, out_features, (3, 3)))
+        model.add_module("final_conv", torch.nn.Conv2d(128, out_features,
+                                                       (3, 3)))
 
         return model
 
@@ -389,7 +391,8 @@ class Img1024x1024Kernel9x9SeparatedDims(AbstractFeatureExtractor):
             model.add_module("conv_1", Conv2dRelu(in_channels, 64, (9, 1)))
             model.add_module("conv_2", Conv2dRelu(64, 64, (1, 9)))
 
-            model.add_module("down_conv_1", Conv2dRelu(64, 128, (9, 9), stride=3))
+            model.add_module("down_conv_1", Conv2dRelu(64, 128, (9, 9),
+                                                       stride=3))
             if norm_class is not None:
                 model.add_module("norm_1", norm_class(128))
             if p_dropout:
@@ -398,7 +401,8 @@ class Img1024x1024Kernel9x9SeparatedDims(AbstractFeatureExtractor):
             model.add_module("conv_3", Conv2dRelu(128, 128, (9, 1)))
             model.add_module("conv_4", Conv2dRelu(128, 128, (1, 9)))
 
-            model.add_module("down_conv_2", Conv2dRelu(128, 256, (7, 7), stride=3))
+            model.add_module("down_conv_2", Conv2dRelu(128, 256, (7, 7),
+                                                       stride=3))
             if norm_class is not None:
                 model.add_module("norm_2", norm_class(256))
             if p_dropout:
@@ -407,7 +411,8 @@ class Img1024x1024Kernel9x9SeparatedDims(AbstractFeatureExtractor):
             model.add_module("conv_5", Conv2dRelu(256, 256, (7, 1)))
             model.add_module("conv_6", Conv2dRelu(256, 256, (1, 7)))
 
-            model.add_module("down_conv_3", Conv2dRelu(256, 256, (5, 5), stride=3))
+            model.add_module("down_conv_3", Conv2dRelu(256, 256, (5, 5),
+                                                       stride=3))
             if norm_class is not None:
                 model.add_module("norm_3", norm_class(256))
             if p_dropout:
@@ -416,7 +421,8 @@ class Img1024x1024Kernel9x9SeparatedDims(AbstractFeatureExtractor):
             model.add_module("conv_7", Conv2dRelu(256, 256, (5, 1)))
             model.add_module("conv_8", Conv2dRelu(256, 256, (1, 5)))
 
-            model.add_module("down_conv_4", Conv2dRelu(256, 128, (5, 5), stride=2))
+            model.add_module("down_conv_4", Conv2dRelu(256, 128, (5, 5),
+                                                       stride=2))
             if norm_class is not None:
                 model.add_module("norm_4", norm_class(128))
             if p_dropout:
@@ -425,12 +431,14 @@ class Img1024x1024Kernel9x9SeparatedDims(AbstractFeatureExtractor):
             model.add_module("conv_9", Conv2dRelu(128, 128, (3, 1)))
             model.add_module("conv_10", Conv2dRelu(128, 128, (1, 3)))
 
-            model.add_module("down_conv_5", Conv2dRelu(128, 128, (3, 3), stride=2))
+            model.add_module("down_conv_5", Conv2dRelu(128, 128, (3, 3),
+                                                       stride=2))
 
             model.add_module("conv_11", Conv2dRelu(128, 128, (3, 1)))
             model.add_module("conv_12", Conv2dRelu(128, 128, (1, 3)))
 
-            model.add_module("final_conv", torch.nn.Conv2d(128, out_features, (3, 3)))
+            model.add_module("final_conv", torch.nn.Conv2d(128, out_features,
+                                                           (3, 3)))
 
             return model
 
