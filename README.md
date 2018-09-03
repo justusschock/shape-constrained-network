@@ -6,6 +6,16 @@ The measured inference performance is up to 170 FPS on a 1080Ti.
 These results have been achieved with images already loaded into RAM and 
 forwarding only one single image through the network at the same time (batchsize = 1)
 
+## Content
+- [Results](#results)
+  - [Indoor](#indoor)
+  - [Outdoor](#outdoor)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Prediction](#prediction)
+  - [Training](#training)
+- [Requirements](#requirements)
+
 ## Results
 
 The given Results are obtained by training the network on [HELEN](http://www.ifp.illinois.edu/~vuongle2/helen/), 
