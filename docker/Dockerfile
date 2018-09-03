@@ -27,20 +27,23 @@ ENV PATH /home/containeruser/conda/bin:$PATH
 RUN conda install -y \
     python=3.5 && \
     conda install -y -c menpo menpo && \
-    conda install -c menpo opencv3 && \
+    conda install -y -c menpo opencv3 && \
     conda clean -ya
 
 # install pip packages
 RUN pip install --upgrade pip && \
     pip install cython \
     opencv-python \
-    torch=0.4.1 \
+    torch==0.4.1 \
     torchvision \
     tqdm \
     scikit-image \
     scikit-learn \
     tensorboardX \
-    pyyaml
+    pyyaml && \
+    git clone https://github.com/justusschock/shape-constrained-network.git && \
+    cd shape-constrained-network && pip install .
+
 
 ENV PYTHONPATH /home/containeruser/PyTorch:$PYTHONPATH
 CMD ["/bin/bash"]
