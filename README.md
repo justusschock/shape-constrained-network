@@ -177,27 +177,27 @@ from datetime import datetime
 
 optimizer = torch.optim.Adam(model.parameters(), lr=float(config.initial_lr))
 
-    out_path = os.path.join(config.output_path, config.network_type, str(datetime.now().strftime("%y-%m-%d_%H-%M-%S")))
-    os.makedirs(out_path, exist_ok=True)
-    shutil.copy2(parsed_args.config_file, out_path)
+out_path = os.path.join(config.output_path, config.network_type, str(datetime.now().strftime("%y-%m-%d_%H-%M-%S")))
+os.makedirs(out_path, exist_ok=True)
+shutil.copy2(parsed_args.config_file, out_path)
 
-    transformations = {"train": Compose([ToTensor(), Normalize([0], [1])]),
-                       "validate": Compose([ToTensor(), Normalize([0], [1])])
-                       }
+transformations = {"train": Compose([ToTensor(), Normalize([0], [1])]),
+                   "validate": Compose([ToTensor(), Normalize([0], [1])])
+                   }
 
-    train(
-        config.network_train_path,
-        config.validation_path,
-        config.num_epochs,
-        out_path,
-        torch.nn.MSELoss(),
-        model,
-        optimizer,
-        config.batch_size,
-        config.verbose,
-        float(config.initial_lr),
-        transformations=transformations,
-        save_outputs=False
+train(
+    config.network_train_path,
+    config.validation_path,
+    config.num_epochs,
+    out_path,
+    torch.nn.MSELoss(),
+    model,
+    optimizer,
+    config.batch_size,
+    config.verbose,
+    float(config.initial_lr),
+    transformations=transformations,
+    save_outputs=False
     )
 ```
 ## Requirements
