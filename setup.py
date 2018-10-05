@@ -19,7 +19,8 @@ setup(
     license="MIT",
     keywords="pytorch deep learning shape network",
     url="https://github.com/justusschock/shape-constrained-network.git",
-    packages=["shapenet"],
+    packages=['shapenet', 'shapenet.data', 'shapenet.utils',
+              'shapenet.models'],
     long_description=read('README.md'),
     classifiers=[
         "Development Status :: 4 - Beta",
