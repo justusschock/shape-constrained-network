@@ -80,7 +80,7 @@ The pretrained model with it's configuration file is provided [here](https://dri
 ## Installation
 To Install the necessary environment follow these steps:
 
-1. `git clone https:/github.com/justusschock/shape-constrained-network.git`
+1. `git clone https://github.com/justusschock/shape-constrained-network.git`
 2. `cd shape-constrained-network`
 3. Install the requirements listed below, use the provided [Dockerfile](docker/Dockerfile) or the [prebuilt docker image](https://hub.docker.com/r/justusschock/shape-constrained-network/)
 4. `python setup.py install`
