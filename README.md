@@ -1,3 +1,6 @@
+# Deprecated
+This repository is deprecated if favor of [the new implementation](https://github.com/justusschock/shapenet).
+
 # Shape Constrained Network
 
 This repository contains my implementation of a shape-constrained network.
