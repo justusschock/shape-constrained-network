@@ -3,8 +3,21 @@ This repository is deprecated if favor of [the new implementation](https://githu
 
 # Shape Constrained Network
 
-This repository contains my implementation of a shape-constrained network.
+This repository contains the first implementation of our Paper ["Super-Realtime Facial Landmark Detection and Shape Fitting by Deep Regression of Shape Model Parameters"](https://arxiv.org/abs/1902.03459).
 
+## Our Paper
+If you use our Code for your own research, please cite our paper:
+```
+@article{Kopaczka2019,
+title = {Super-Realtime Facial Landmark Detection and Shape Fitting by Deep Regression of Shape Model Parameters},
+author = {Marcin Kopaczka and Justus Schock and Dorit Merhof},
+year = {2019},
+journal = {arXiV preprint}
+}
+```
+The Paper is available as [PDF on arXiv](https://arxiv.org/abs/1902.03459).
+
+## Performance
 The measured inference performance is up to 170 FPS on a 1080Ti. 
 These results have been achieved with images already loaded into RAM and 
 forwarding only one single image through the network at the same time (batchsize = 1)
